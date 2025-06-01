@@ -710,3 +710,32 @@ HRESULT aime_mifare_read_block(const uint32_t uid, const uint8_t block, uint8_t*
 
     return hr;
 }
+
+HRESULT aime_debug_print_versions() {
+    const uint32_t MAX_LEN = 64;
+
+    uint32_t len = MAX_LEN;
+    char *str = malloc(len);
+    memset(str, 0, len);
+
+    HRESULT hr = aime_get_hw_version(str, &len);
+    if (!SUCCEEDED(hr)) {
+        goto end_aime_debug_print_versions;
+    }
+
+    dprintf(NAME ": HW Version: %s\n", str);
+
+    len = MAX_LEN;
+    memset(str, 0, len);
+
+    hr = aime_get_fw_version(str, &len);
+    if (!SUCCEEDED(hr)) {
+        goto end_aime_debug_print_versions;
+    }
+
+    dprintf(NAME ": FW Version: %s\n", str);
+
+    end_aime_debug_print_versions:
+    free(str);
+    return hr;
+}

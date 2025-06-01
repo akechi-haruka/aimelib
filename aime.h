@@ -76,3 +76,4 @@ HRESULT aime_set_mifare_key_namco(const uint8_t* key, uint8_t len);
 HRESULT aime_mifare_select(uint32_t uid);
 HRESULT aime_mifare_authenticate(uint32_t uid, uint8_t unknown);
 HRESULT aime_mifare_read_block(uint32_t uid, uint8_t block, uint8_t* block_contents, const uint8_t* block_len);
+HRESULT aime_debug_print_versions();
