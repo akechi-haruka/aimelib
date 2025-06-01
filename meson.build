@@ -6,7 +6,7 @@ project('aimelib', 'c',
 # not the executables that use the library.
 lib_args = ['-DBUILDING_MESON_LIBRARY']
 
-static_library('aimelib',
+aime_lib = static_library('aimelib',
                install : true,
                c_args : lib_args,
                sources : [
