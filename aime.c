@@ -455,6 +455,7 @@ HRESULT aime_set_polling(const bool on){
     dprintf(NAME ": Set Polling (%d)\n", on);
 
     if (!on && hThread != INVALID_HANDLE_VALUE){
+        is_polling = false;
         dprintf(NAME ": Waiting for thread termination\n");
         WaitForSingleObject(hThread, INFINITE);
         dprintf(NAME ": Thread terminated\n");
@@ -513,7 +514,7 @@ HRESULT aime_poll(){
         const uint8_t count = data[offset++];
         for (int i = 0; i < count; i++) {
             const uint8_t type = data[offset++];
-            const uint8_t size = data[offset++];
+            uint8_t size = data[offset++];
 
             memset(last_card_id, 0, CARD_BUF_LEN);
 
@@ -559,6 +560,7 @@ HRESULT aime_poll(){
                 if (size == 0x10) {
                     memcpy(last_card_id, data + offset, size);
                     offset += size;
+                    size = 8;
                     last_card_type = CARD_TYPE_FELICA;
                     last_card_len = size;
                     dprintf(NAME ": Found a FeliCa card (%d)\n", size);
