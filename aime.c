@@ -20,7 +20,7 @@ if (pos >= max){ \
 #define TRY_SALVAGE_COMM_SYNC 1
 
 static HANDLE hSerial = NULL;
-static HANDLE hThread = NULL;
+static HANDLE hThread = INVALID_HANDLE_VALUE;
 static HANDLE hStreamMutex = NULL;
 static bool is_polling = false;
 static char last_card_id[CARD_BUF_LEN];
@@ -29,6 +29,8 @@ static uint8_t last_card_len = 0;
 static uint8_t aime_seq = 0;
 static bool aime_use_led_flash = false;
 static bool aime_led_flash = false;
+static uint16_t aime_read_delay = 1000;
+static uint32_t aime_timeout = 0;
 
 HRESULT aime_connect(const uint32_t port, const int baud, const bool use_custom_led_flash) {
 
@@ -408,6 +410,7 @@ HRESULT aime_get_led_info(char* out, uint32_t* len){
 
 DWORD WINAPI polling_thread(__attribute__((unused)) void* data) {
     dprintf(NAME ": Card Polling Thread started\n");
+    uint32_t timer = 0;
     while (is_polling){
 
         if (FAILED(aime_poll())){
@@ -438,12 +441,20 @@ DWORD WINAPI polling_thread(__attribute__((unused)) void* data) {
                 aime_led_set(0, 0, 0);
             }
         }
-        Sleep(1000);
+        Sleep(aime_read_delay);
+        timer += aime_read_delay;
+        if (aime_timeout > 0 && timer >= aime_timeout) {
+            is_polling = false;
+        }
     }
 
     dprintf(NAME ": Card Polling Thread stopped\n");
     hThread = INVALID_HANDLE_VALUE;
     return 0;
+}
+
+bool aime_is_polling() {
+    return is_polling;
 }
 
 HRESULT aime_set_polling(const bool on){
@@ -740,4 +751,12 @@ HRESULT aime_debug_print_versions() {
     end_aime_debug_print_versions:
     free(str);
     return hr;
+}
+
+void aime_set_poll_delay(uint16_t time) {
+    aime_read_delay = time;
+}
+
+void aime_set_timeout(uint32_t timeout) {
+    aime_timeout = timeout;
 }
