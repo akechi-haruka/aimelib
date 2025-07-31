@@ -67,6 +67,7 @@ HRESULT aime_get_led_hw_version(char* out, uint32_t* len);
 HRESULT aime_get_led_info(char* out, uint32_t* len);
 HRESULT aime_set_polling(bool on);
 HRESULT aime_poll();
+void aime_clear_card();
 const char* aime_get_card_id();
 uint8_t aime_get_card_len();
 uint8_t aime_get_card_type();

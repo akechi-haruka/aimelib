@@ -457,6 +457,11 @@ bool aime_is_polling() {
     return is_polling;
 }
 
+void aime_clear_card() {
+    last_card_type = CARD_TYPE_NONE;
+    last_card_len = 0;
+}
+
 HRESULT aime_set_polling(const bool on){
 
     if (is_polling == on){
@@ -489,8 +494,7 @@ HRESULT aime_set_polling(const bool on){
     dprintf(NAME ": Set Radio: %d\n", resp.status);
 
     is_polling = on;
-    last_card_type = CARD_TYPE_NONE;
-    last_card_len = 0;
+    aime_clear_card();
 
     if (is_polling && hThread == INVALID_HANDLE_VALUE){
         hThread = CreateThread(NULL, 0, polling_thread, NULL, 0, NULL);
