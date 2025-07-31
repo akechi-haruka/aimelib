@@ -82,3 +82,4 @@ HRESULT aime_debug_print_versions();
 void aime_set_poll_delay(uint16_t time);
 void aime_set_timeout(uint32_t timeout);
 bool aime_is_polling();
+void aime_set_felica_include_pmm(bool pmm);
