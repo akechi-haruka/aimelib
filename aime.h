@@ -35,6 +35,7 @@ enum {
     CARD_TYPE_NONE = 0x00,
     CARD_TYPE_MIFARE = 0x10,
     CARD_TYPE_FELICA = 0x20,
+    CARD_TYPE_ERROR = 0xFE,
     CARD_TYPE_ILLEGAL = 0xFF,
 };
 

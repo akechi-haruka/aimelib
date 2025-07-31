@@ -415,6 +415,7 @@ DWORD WINAPI polling_thread(__attribute__((unused)) void* data) {
 
         if (FAILED(aime_poll())){
             dprintf(NAME ": ERROR: Card polling failed!\n");
+            last_card_type = CARD_TYPE_ERROR;
             return 1;
         }
 
