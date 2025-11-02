@@ -35,6 +35,7 @@ enum {
     CARD_TYPE_NONE = 0x00,
     CARD_TYPE_MIFARE = 0x10,
     CARD_TYPE_FELICA = 0x20,
+    CARD_TYPE_ERROR = 0xFE,
     CARD_TYPE_ILLEGAL = 0xFF,
 };
 
@@ -67,6 +68,7 @@ HRESULT aime_get_led_hw_version(char* out, uint32_t* len);
 HRESULT aime_get_led_info(char* out, uint32_t* len);
 HRESULT aime_set_polling(bool on);
 HRESULT aime_poll();
+void aime_clear_card();
 const char* aime_get_card_id();
 uint8_t aime_get_card_len();
 uint8_t aime_get_card_type();
@@ -80,3 +82,4 @@ HRESULT aime_debug_print_versions();
 void aime_set_poll_delay(uint16_t time);
 void aime_set_timeout(uint32_t timeout);
 bool aime_is_polling();
+void aime_set_felica_include_pmm(bool pmm);

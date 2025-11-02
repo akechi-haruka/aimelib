@@ -31,6 +31,7 @@ static bool aime_use_led_flash = false;
 static bool aime_led_flash = false;
 static uint16_t aime_read_delay = 1000;
 static uint32_t aime_timeout = 0;
+static bool felica_include_pmm = false;
 
 HRESULT aime_connect(const uint32_t port, const int baud, const bool use_custom_led_flash) {
 
@@ -415,6 +416,7 @@ DWORD WINAPI polling_thread(__attribute__((unused)) void* data) {
 
         if (FAILED(aime_poll())){
             dprintf(NAME ": ERROR: Card polling failed!\n");
+            last_card_type = CARD_TYPE_ERROR;
             return 1;
         }
 
@@ -457,6 +459,11 @@ bool aime_is_polling() {
     return is_polling;
 }
 
+void aime_clear_card() {
+    last_card_type = CARD_TYPE_NONE;
+    last_card_len = 0;
+}
+
 HRESULT aime_set_polling(const bool on){
 
     if (is_polling == on){
@@ -490,8 +497,7 @@ HRESULT aime_set_polling(const bool on){
 
     is_polling = on;
     if (is_polling) {
-        last_card_type = CARD_TYPE_NONE;
-        last_card_len = 0;
+        aime_clear_card();
     }
 
     if (is_polling && hThread == INVALID_HANDLE_VALUE){
@@ -573,7 +579,7 @@ HRESULT aime_poll(){
                 if (size == 0x10) {
                     memcpy(last_card_id, data + offset, size);
                     offset += size;
-                    size = 8;
+                    size = felica_include_pmm ? 0x10 : 0x08;
                     last_card_type = CARD_TYPE_FELICA;
                     last_card_len = size;
                     dprintf(NAME ": Found a FeliCa card (%d)\n", size);
@@ -761,4 +767,8 @@ void aime_set_poll_delay(uint16_t time) {
 
 void aime_set_timeout(uint32_t timeout) {
     aime_timeout = timeout;
+}
+
+void aime_set_felica_include_pmm(bool pmm) {
+    felica_include_pmm = pmm;
 }
