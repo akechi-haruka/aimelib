@@ -32,6 +32,7 @@ static bool aime_led_flash = false;
 static uint16_t aime_read_delay = 1000;
 static uint32_t aime_timeout = 0;
 static bool felica_include_pmm = false;
+static uint8_t last_card_rgb[3];
 
 HRESULT aime_connect(const uint32_t port, const int baud, const bool use_custom_led_flash) {
 
@@ -614,6 +615,10 @@ uint8_t aime_get_card_type(){
 
 HRESULT aime_led_set(const uint8_t r, const uint8_t g, const uint8_t b){
 
+    if (last_card_rgb[0] == r && last_card_rgb[1] == g && last_card_rgb[2] == b) {
+        return S_FALSE;
+    }
+
     dprintf(NAME ": Set LEDs (%d, %d, %d)\n", r, g, b);
 
     struct aime_req_any req = {0};
@@ -628,6 +633,10 @@ HRESULT aime_led_set(const uint8_t r, const uint8_t g, const uint8_t b){
     if (!SUCCEEDED(hr)){
         return hr;
     }
+
+    last_card_rgb[0] = r;
+    last_card_rgb[1] = g;
+    last_card_rgb[2] = b;
 
     dprintf(NAME ": Set LEDs\n");
 
