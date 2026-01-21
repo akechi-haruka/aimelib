@@ -51,7 +51,7 @@ HRESULT aime_connect(const uint32_t port, const int baud, const bool use_custom_
     dprintf(NAME ": Connect COM%d@%d\n", port, baud);
 
     char portname[16];
-    sprintf(portname, "COM%d", port);
+    sprintf(portname, "\\\\.\\COM%u", port);
 
     hSerial = CreateFile(
             portname,
